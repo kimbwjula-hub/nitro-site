@@ -34,5 +34,11 @@
       "type": "durable-object",
       "storage": "sqlite"
     }
-  }
+  },
+  "routes": [
+    {
+      "pattern": "agencianitro.com.br",
+      "custom_domain": true
+    }
+  ]
 }
