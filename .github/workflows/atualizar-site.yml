@@ -1,0 +1,65 @@
+name: Atualizar site Nitro pelo ZIP
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Nitro_site_para_hospedar(1).zip'
+      - 'Nitro_site_para_hospedar.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Preparar site enviado
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os, json, zipfile, shutil
+          from pathlib import Path
+          candidates = [Path("Nitro_site_para_hospedar(1).zip"),Path("Nitro_site_para_hospedar.zip")]
+          archive = next((p for p in candidates if p.exists()),None)
+          if archive is None:
+              raise SystemExit("Envie o ZIP para a raiz do repositorio.")
+          with zipfile.ZipFile(archive) as z:
+              names=z.namelist()
+              if not {"dist/server/index.js","dist/server/wrangler.json","dist/client/favicon.svg"}.issubset(names):
+                  raise SystemExit("ZIP sem a estrutura Vinext esperada.")
+              for info in z.infolist():
+                  dest=Path(info.filename)
+                  if dest.is_absolute() or ".." in dest.parts:
+                      raise SystemExit("Caminho inseguro no ZIP")
+              for name in ("assets","fonts","dist"):
+                  p=Path(name)
+                  if p.exists(): shutil.rmtree(p)
+              for name in ("favicon.svg","index.html"):
+                  p=Path(name)
+                  if p.exists():p.unlink()
+              z.extractall(".")
+          cfg=json.loads(Path("dist/server/wrangler.json").read_text())
+          cfg["name"]="nitro-site"
+          cfg["main"]="dist/server/index.js"
+          cfg["assets"]={"directory":"dist/client"}
+          cfg.pop("d1_databases",None)
+          cfg.pop("build",None)
+          Path("wrangler.json").write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+"\n")
+          print("Projeto Nitro preparado para Cloudflare Workers.")
+          PY
+      - name: Salvar atualizacao no GitHub
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Atualizar site Nitro a partir do ZIP"
+            git push
+          fi
