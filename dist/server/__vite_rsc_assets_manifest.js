@@ -73,7 +73,7 @@ export default {
     "app/layout.tsx": {
       "js": [],
       "css": [
-        "/_next/static/css/index.D7HajtJb.css"
+        "/_next/static/css/nitro-form-top-v2.css"
       ]
     }
   }
