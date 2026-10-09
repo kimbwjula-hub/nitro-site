@@ -1,31 +1,14 @@
-# Site Nitro
+# Agência Nitro — site
 
-Site estatico de captura da Nitro Marketing & Publicidade.
+Esta é a distribuição compilada do site da Agência Nitro (Vinext/Next).
 
-## Como hospedar
+## Implantação no Cloudflare Workers
 
-### Cloudflare Pages
+- Repositório Git conectado: `kimbwjula-hub/nitro-site`
+- Comando de build: deixar vazio (os arquivos já estão compilados)
+- Comando de deploy: `npx wrangler deploy`
+- Arquivo de configuração: `wrangler.json` na raiz
+- Entry point: `dist/server/index.js`
+- Assets públicos: `dist/client/`
 
-- Framework preset: `None`
-- Build command: deixar vazio
-- Build output directory: `/`
-- Root directory: `/`
-
-O arquivo `index.html` ja esta na raiz do repositorio.
-
-### Hostinger ou hospedagem comum
-
-Suba todos os arquivos deste repositorio para a pasta publica do site, mantendo:
-
-- `index.html`
-- `assets/`
-- `fonts/`
-- `favicon.svg`
-
-## WhatsApp
-
-O botao final direciona para:
-
-`https://wa.me/557798080031`
-
-com mensagem preenchida automaticamente com nome, empresa e servico escolhido.
+O projeto implantado usa Workers, não Pages estático.
