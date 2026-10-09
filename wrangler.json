@@ -1,6 +1,6 @@
 {
   "name": "nitro-site",
-  "main": "./dist/server/index.js",
+  "main": "./worker-entry.js",
   "compatibility_date": "2026-05-15",
   "compatibility_flags": [
     "nodejs_compat"
@@ -20,5 +20,19 @@
   },
   "observability": {
     "enabled": true
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NITRO_LEADS_STORE",
+        "class_name": "NitroLeadsStore"
+      }
+    ]
+  },
+  "exports": {
+    "NitroLeadsStore": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
   }
 }
