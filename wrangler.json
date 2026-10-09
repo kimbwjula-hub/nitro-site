@@ -29,16 +29,22 @@
       }
     ]
   },
-  "exports": {
-    "NitroLeadsStore": {
-      "type": "durable-object",
-      "storage": "sqlite"
-    }
-  },
   "routes": [
     {
       "pattern": "agencianitro.com.br",
       "custom_domain": true
+    },
+    {
+      "pattern": "www.agencianitro.com.br",
+      "custom_domain": true
+    }
+  ],
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "NitroLeadsStore"
+      ]
     }
   ]
 }
